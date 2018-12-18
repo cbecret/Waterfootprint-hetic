@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block content %}
+
+  <h2>Search Form</h2>
+
+  <form method="post" id="waterForm" data-regions-url="{% url 'ajax_load_regions' %}" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_p }}
+    </table>
+    <button type="submit">Save</button>
+  </form>
+
+
+{% endblock %}
+    {{ data }}
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+</html>

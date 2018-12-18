@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% block css %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.css" media="screen,projection"/>
+
+    {% endblock css %}
+</head>
+<body style="background-color: lightcyan">
+    <h1>SEARCH PAGE</h1>
+
+{% block content %}
+
+  <h2>Search Form</h2>
+
+  <form method="post" id="waterForm" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_p }}
+    </table>
+    <button type="submit">Save</button>
+  </form>
+
+{% endblock %}
+
+{% if data %}
+    <div style="max-width: 50%; display: flex">
+        <canvas id="localChart" width="400" height="400"></canvas>
+        <canvas id="worldChart" width="400" height="400"></canvas>
+    </div>
+{% endif %}
+
+</body>
+
+{% block javascript %}
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+  <script>
+  var regions = {{ data.provinces_json }}
+  $(document).ready(function(){
+
+
+    $('#id_region').selectize();
+    $('#waterForm p:last').css("display", "none");
+
+    //$('select').selectize();
+      $('#id_product').selectize();
+      $('#id_country').selectize().on("change", function() {
+          $('#waterForm p:last').css("display", "block");
+          console.log(regions)
+
+      });
+
+    //$('#id_country-selectized').on("change", function() {console.log("aaa")})
+
+    var localChart = document.getElementById("localChart");
+    var localChart = new Chart(localChart,{
+        type: 'pie',
+        data: {
+                labels: ["Green", "Blue", "Grey"],
+                datasets: [{
+                    label: 'Quantity of Water',
+                    data: [{{ data.green }}, {{ data.blue }}, {{ data.grey }}],
+                    backgroundColor: [
+                        'rgba(99, 255, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(130, 130, 130, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(99,255,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(130, 130, 130, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        options: {
+            responsive: true
+        }
+    });
+    var worldChart = document.getElementById("worldChart");
+    var worldChart = new Chart(worldChart,{
+        type: 'pie',
+        data: {
+                labels: ["Green", "Blue", "Grey"],
+                datasets: [{
+                    label: 'Quantity of Water',
+                    data: [{{ data.worldGreen }}, {{ data.worldBlue }}, {{ data.worldGrey }}],
+                    backgroundColor: [
+                        'rgba(99, 255, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(130, 130, 130, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(99,255,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(130, 130, 130, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+    });
+
+  });
+
+
+  </script>
+  {% endblock javascript %}
+</html>
